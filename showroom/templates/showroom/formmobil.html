@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Data Mobil</title>
+    <link rel="stylesheet" href="{% static 'showroom/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'showroom/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <nav class="navbar bg-info">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-0 h1" href="{% url 'homepage' %}">
+                <img src="{% static 'showroom/car-front-fill.svg' %}" width="30" height="24" class="d-inline-block align-text-top">
+                Showroom Mobil
+            </a>
+        </div>
+    </nav>
+    <br>
+    <div class="container-fluid mb-5">
+        <h4>Tambah Data Mobil</h4>
+        <form method="POST">
+            {% csrf_token %}
+            <table class="table align-middle">
+                <tr>
+                    <td style="width: 35%;">ID</td>
+                    <td>{{ form.id_mobil }}</td>
+                </tr>
+                <tr>
+                    <td>Merk</td>
+                    <td>{{ form.merk }}</td>
+                </tr>
+                <tr>
+                    <td>Model</td>
+                    <td>{{ form.model}}</td>
+                </tr>
+                <tr>
+                    <td>Tahun</td>
+                    <td>{{ form.tahun }}</td>
+                </tr>
+                <tr>
+                    <td>Harga Dasar (Rp)</td>
+                    <td>{{ form.harga_dasar }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <label>
+                            <input type="checkbox" id="toggleDanaBank">
+                            Pembelian menggunakan dana bank?
+                        </label>
+                    </td>
+                </tr>
+                <tr id="rowTglPinjaman" style="display: none; width: 35%;">
+                    <td>Tanggal Pinjaman</td>
+                    <td>{{ form.tgl_pinjaman }}</td>
+                </tr>
+                <tr id="rowDanaPinjaman" style="display: none;">
+                    <td>Dana Pinjaman (Rp)</td>
+                    <td>{{ form.dana_pinjaman }}</td>
+                </tr>
+                <tr id="rowSukuBunga" style="display: none;">
+                    <td>Suku Bunga (% pertahun)</td>
+                    <td>{{ form.suku_bunga }}</td>
+                </tr>
+                <tr id="rowLamaPinjaman" style="display: none;">
+                    <td>Lama Pinjaman (bulan)</td>
+                    <td>{{ form.lama_pinjaman }}</td>
+                </tr>  
+            </table>
+            <div class="d-flex justify-content-end gap-2 me-2">
+                <a href="{% url 'homepage' %}" class="btn btn-warning btn-sm">Batal</a>
+                <button type="submit" class="btn btn-success btn-sm">Simpan</button>
+            </div>
+        </form>
+    
+        {% if messages %}
+        <div id="popupMessage" class="popup-message">
+          {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'showroom/js/formmobil.js' %}"></script>
+    <script src="{% static 'showroom/js/global.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Mobil</title>
+    <link rel="stylesheet" href="{% static 'showroom/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'showroom/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <nav class="navbar bg-info">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-0 h1" href="{% url 'homepage' %}">
+                <img src="{% static 'showroom/car-front-fill.svg' %}" width="30" height="24" class="d-inline-block align-text-top">
+                Showroom Mobil
+            </a>
+        </div>
+    </nav>
+    <br>
+    <div class="container-fluid mb-5">
+        <a href="{% url 'homepage' %}" class="btn btn-primary btn-sm">&lt; Kembali</a>
+        <br><br>
+        <h4>Detail Mobil</h4>
+        <table class="table table-hover">
+            <tr>
+                <td style="width: 35%;">ID</td>
+                <td>{{ mobil.id_mobil }}</td>
+            </tr>
+            <tr>
+                <td>Merk</td>
+                <td>{{ mobil.merk }}</td>
+            </tr>
+            <tr>
+                <td>Model</td>
+                <td>{{ mobil.model }}</td>
+            </tr>
+            <tr>
+                <td>Tahun</td>
+                <td>{{ mobil.tahun }}</td>
+            </tr>
+            <tr>
+                <td>Harga Dasar</td>
+                <td>Rp {{ mobil.harga_dasar }}</td>
+            </tr>
+        </table>
+        <div class="d-flex justify-content-end gap-2 me-2">
+            <form method="post" action="{% url 'hapus_mobil' mobil.id_mobil %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah kamu yakin ingin menghapus data mobil ini?')">Hapus Mobil</button>
+            </form>
+        </div>
+        <br>
+
+        <h4>Harga Pokok Penjualan (HPP)</h4>
+        <p>HPP = Harga Dasar + (Total Bunga Pinjaman) + (Total Biaya Service)
+        <br><strong>HPP = Rp {{ mobil.hpp|floatformat:2 }}</strong></p>
+        <br>
+    
+        <h4>Informasi Cicilan Bank</h4>
+        {% if mobil.dana_pinjaman %}
+        <table class="table table-hover">
+            <tr>
+                <td style="width: 35%;">Tanggal Pinjaman</td>
+                <td>{{ mobil.tgl_pinjaman }}</td>
+            </tr>
+            <tr>
+                <td>Jumlah Dana Pinjaman</td>
+                <td>Rp {{ mobil.dana_pinjaman }}</td>
+            </tr>
+            <tr>
+                <td>Suku Bunga</td>
+                <td>{{ mobil.suku_bunga }}% pertahun</td>
+            </tr>
+            <tr>
+                <td>Lama Pinjaman</td>
+                <td>{{ mobil.lama_pinjaman }} bulan</td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>{{ mobil.pinjaman_lunas|yesno:"Lunas,Belum Lunas" }}</td>
+            </tr>
+            {% if not mobil.pinjaman_lunas %}
+            <tr>
+                <td>Cicilan perbulan</td>
+                <td>Rp {{ mobil.cicilan_perbulan|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <td>Sisa Waktu Pinjaman</td>
+                <td>{{ mobil.status_pinjaman }}</td>
+            </tr>
+            {% endif %}
+        </table>
+        {% if not mobil.pinjaman_lunas %}
+        <div class="d-flex justify-content-end gap-2 me-2">
+            <form method="post" action="{% url 'tandai_lunas' mobil.id_mobil %}" onsubmit="return confirm('Apakah kamu yakin ingin menandai pinjaman sebagai lunas?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning btn-sm">Tandai Lunas</button>
+            </form>
+        </div>
+        {% endif %}
+        {% else %}
+        <p><i>Pembelian mobil ini tidak menggunakan dana pinjaman.</i></p>
+        {% endif %}
+        <br>
+    
+        <h4>Riwayat Service</h4>
+        <a href="{% url 'tambah_service_dt' mobil.id_mobil %}" class="btn btn-success btn-sm">Tambah Data</a>
+        <table class="table">
+            <tr>
+                <th>Tanggal</th>
+                <th>Deskripsi</th>
+                <th>Biaya</th>
+                <th>Hapus</th>
+            </tr>
+        {% if services %}
+            {% for service in services %}
+            <tr>
+                <td>{{ service.tgl_service }}</td>
+                <td>{{ service.deskripsi }}</td>
+                <td>{{ service.biaya }}</td>
+                <td>
+                    <form method="post" action="{% url 'hapus_service' service.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Apakah kamu yakin ingin menghapus data service ini?')" class="btn btn-danger btn-sm">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3">Belum ada data service.</td>
+            </tr>
+        {% endif %}
+        </table>
+    
+        {% if messages %}
+        <div id="popupMessage" class="popup-message">
+          {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'showroom/js/global.js' %}"></script>
+</body>
+</html>

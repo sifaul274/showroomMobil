@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Showroom Mobil</title>
+    <link rel="stylesheet" href="{% static 'showroom/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'showroom/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <nav class="navbar bg-info">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-0 h1" href="{% url 'homepage' %}">
+                <img src="{% static 'showroom/car-front-fill.svg' %}" width="30" height="24" class="d-inline-block align-text-top">
+                Showroom Mobil
+            </a>
+        </div>
+    </nav>
+    <br>
+    <div class="container-fluid mb-5">
+        <h2 class="mb-2">Daftar Mobil</h2>
+        <div class="mb-2">
+            <a href="{% url 'tambah_mobil' %}" class="btn btn-success btn-sm">Tambah Mobil</a>
+            <a href="{% url 'tambah_service_hm' %}" class="btn btn-secondary btn-sm">Service</a>
+        </div>
+        <table class="table table-light table-striped-columns table-hover">
+            <thead>
+                <tr class="table-info">
+                    <th>ID</th>
+                    <th>Merk</th>
+                    <th>Model</th>
+                    <th>Tahun</th>
+                    <th>Hapus Data</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            {% for mobil in daftar_mobil %}
+                <tr class="clickable-row">
+                    <td><a href="{% url 'detail_mobil' mobil.id_mobil %}">{{ mobil.id_mobil }}</a></td>
+                    <td><a href="{% url 'detail_mobil' mobil.id_mobil %}">{{ mobil.merk }}</a></td>
+                    <td><a href="{% url 'detail_mobil' mobil.id_mobil %}">{{ mobil.model }}</a></td>
+                    <td><a href="{% url 'detail_mobil' mobil.id_mobil %}">{{ mobil.tahun }}</a></td>
+                    <td>
+                        <form method="post" action="{% url 'hapus_mobil' mobil.id_mobil %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah kamu yakin ingin menghapus data mobil ini?')">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Belum ada data mobil.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    
+        {% if messages %}
+        <div id="popupMessage" class="popup-message">
+          {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'showroom/js/global.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Service</title>
+    <link rel="stylesheet" href="{% static 'showroom/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'showroom/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <nav class="navbar bg-info">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-0 h1" href="{% url 'homepage' %}">
+                <img src="{% static 'showroom/car-front-fill.svg' %}" width="30" height="24" class="d-inline-block align-text-top">
+                Showroom Mobil
+            </a>
+        </div>
+    </nav>
+    <br>
+    <div class="container-fluid mb-5">
+        <h4>Tambah Data Service</h4>
+        <form method="POST">
+            {% csrf_token %}
+            <table class="table align-bottom">
+                <tr>
+                    <td><label class="form-label">ID Mobil</label></td>
+                    <td>
+                    {% if form.initial.mobil %}
+                        <input type="text" name="mobil" value="{{ form.initial.mobil }}" readonly class="form-control-plaintext">
+                    {% else %}
+                        {{ form.mobil }}
+                    {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="form-label">Tanggal Service</label></td>
+                    <td>{{ form.tgl_service }}</td>
+                </tr>
+                <tr>
+                    <td class="align-top"><label class="form-label">Deskripsi</label></td>
+                    <td>{{ form.deskripsi }}</td>
+                </tr>
+                <tr>
+                    <td><label class="form-label">Biaya (Rp)</label></td>
+                    <td>{{ form.biaya }}</td>
+                </tr>
+            </table>
+            <div class="d-flex justify-content-end gap-2 me-2">
+                <a href="{{ referer }}" class="btn btn-warning btn-sm">Batal</a>
+                <button type="submit" class="btn btn-success btn-sm">Simpan</button>    
+            </div>
+        </form>
+
+        {% if messages %}
+        <div id="popupMessage" class="popup-message">
+          {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'showroom/js/global.js' %}"></script>
+</body>
+</html>
